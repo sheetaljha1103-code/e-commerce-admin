@@ -1,3 +1,5 @@
+"use client"
+
 import { title } from "process";
 import { 
         Alert, 

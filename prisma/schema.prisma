@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -21,9 +22,24 @@ model Product {
 }
 
 model Store {
-  id        String   @id @default(cuid())
+  id        String      @id @default(cuid())
   name      String
   userId    String
+  billboard Billboard[] @relation("StoreToBillboard")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Billboard {
+  id      String @id @default(uuid())
+  storeId String
+  store   Store  @relation("StoreToBillboard", fields: [storeId], references: [id])
+
+  label    String
+  imageUrl String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([storeId])
 }
