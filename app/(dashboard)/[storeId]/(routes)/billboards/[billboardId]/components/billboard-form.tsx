@@ -25,7 +25,7 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import { useOrigin } from "@/hooks/use-origin"
 import { Billboard } from "@prisma/client"
 import ImageUpload from "@/components/ui/image-upload";
-import prismadb from "@/lib/prismadb";
+
 
 interface BillboardFormProps {
   initialData: Billboard | null
@@ -66,8 +66,11 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
     },
   })
 
+console.log("IMAGE URL:", form.watch("imageUrl"));
+
   const onSubmit = async (data: BillboardFormValues) => {
     console.log("SUBMIT DATA:", data);
+      console.log(data);
     try {
       setLoading(true)
 

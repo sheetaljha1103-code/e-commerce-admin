@@ -10,6 +10,11 @@ const BillboardsPage = async ({
   }>;
 }) => {
   const { billboardId } = await params;
+  
+const allBillboards = await prismadb.billboard.findMany();
+
+console.log("ALL BILLBOARDS:", allBillboards);
+
 
   const billboard =
     billboardId === "new"
@@ -19,6 +24,7 @@ const BillboardsPage = async ({
             id: billboardId,
           },
         });
+        console.log('initialData', billboard);
 
   return (
     <div className="flex-col">

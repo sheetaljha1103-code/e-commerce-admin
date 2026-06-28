@@ -37,8 +37,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         {value.map((url) => (
           <div
             key={url}
-            className="relative w-[200px] h-[200px] overflow-hidden rounded-md border"
-          >
+             className="relative w-[200px] h-[200px] overflow-hidden rounded-md border"
+             >
             <button
               type="button"
               onClick={() => onRemove(url)}
@@ -48,10 +48,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             </button>
 
             <img
-              src={url}
-              alt="Uploaded"
-              className="w-full h-full object-cover"
-            />
+  src={url}
+  alt="Uploaded"
+  className="w-full h-full object-cover"
+  onError={() => console.log("IMAGE LOAD ERROR")}
+  onLoad={() => console.log("IMAGE LOADED")}
+/>
           </div>
         ))}
       </div>
@@ -65,7 +67,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             type="button"
             disabled={disabled}
             onClick={() => open()}
-            className="border px-4 py-2 rounded-md flex items-center gap-2"
+            className="border px-2 py-1 rounded-md flex items-center gap-2"
           >
             <ImagePlus className="h-4 w-4" />
             Upload an Image
