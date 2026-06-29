@@ -4,55 +4,80 @@ import prismadb from "@/lib/prismadb";
 import next from "next";
 import { Label } from "radix-ui";
 
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ billboardId: string }> }
+) {
+
+  try {
+    const { billboardId } = await params;
+     console.log(" GET ROUTE HIT");
+     
+         console.log("billboardId =", billboardId);
+
+
+    if (!billboardId) {
+      return new NextResponse("Billboard id is required", { status: 400 });
+    }
+
+    const billboard = await prismadb.billboard.findUnique({
+      where: {
+        id: billboardId,
+      },
+    });
+
+
+    console.log("billboard =", billboard);
+
+
+    return NextResponse.json(billboard);
+  } catch (error) {
+    console.log("[BILLBOARD_GET]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
+
+
 export async function PATCH(
   req: Request,
-  { params }: { params: Promise<{ storeId: string, billboardId: string }> }
+  { params }: { params: Promise<{ billboardId: string }> }
 ) {
-  const { storeId } = await params;
+  try {
+    const { billboardId } = await params;
 
- try {
     const { userId } = await auth();
-
-    const body = await req.json();
-
-    const { label, imageUrl } = body;
-
-
-    if (!storeId) {
-    return new NextResponse("Store id is required", { status: 400 });
-  }
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
+    if (!billboardId) {
+      return new NextResponse("Billboard id is required", { status: 400 });
+    }
+
+    const body = await req.json();
+
+    const { label, imageUrl } = body;
+
     if (!label) {
-      return new NextResponse("label is required", { status: 400 });
+      return new NextResponse("Label is required", { status: 400 });
     }
 
-     if (!imageUrl) {
-      return new NextResponse("image Url is required", { status: 400 });
+    if (!imageUrl) {
+      return new NextResponse("Image URL is required", { status: 400 });
     }
 
-    if (!(await params).billboardId) {
-        return new NextResponse("Billboard id is required", {status:400});
-    }
-
-    return NextResponse.json({ success: true });
- 
-    const billboard = await prismadb.billboard.updateMany({
+    const billboard = await prismadb.billboard.update({
       where: {
-        id: (await params).billboardId,
-        
-    },
-     data: {
-      label,
-      imageUrl
-    },
-  });
+        id: billboardId,
+      },
+      data: {
+        label,
+        imageUrl,
+      },
+    });
 
-  return NextResponse.json(billboard)
-
+    return NextResponse.json(billboard);
   } catch (error) {
     console.log("[BILLBOARD_PATCH]", error);
     return new NextResponse("Internal error", { status: 500 });
@@ -62,30 +87,30 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ storeId: string }> }
+  { params }: { params: Promise<{ billboardId: string }> }
 ) {
   try {
+    const { billboardId } = await params;
+
     const { userId } = await auth();
-    const { storeId } = await params;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
-    if (!storeId) {
-      return new NextResponse("Store id is required", { status: 400 });
+    if (!billboardId) {
+      return new NextResponse("Billboard id is required", { status: 400 });
     }
 
-    const store = await prismadb.store.deleteMany({
+    const billboard = await prismadb.billboard.delete({
       where: {
-        id: storeId,
-        userId,
+        id: billboardId,
       },
     });
 
-    return NextResponse.json(store);
+    return NextResponse.json(billboard);
   } catch (error) {
-    console.log("[STORE_DELETE_ERROR]", error);
+    console.log("[BILLBOARD_DELETE]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }

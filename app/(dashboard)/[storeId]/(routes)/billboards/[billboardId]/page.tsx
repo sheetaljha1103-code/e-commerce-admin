@@ -10,21 +10,19 @@ const BillboardsPage = async ({
   }>;
 }) => {
   const { billboardId } = await params;
-  
-const allBillboards = await prismadb.billboard.findMany();
 
-console.log("ALL BILLBOARDS:", allBillboards);
+  console.log("PARAM billboardId =", billboardId);
 
+const billboard =
+  billboardId === "new"
+    ? null
+    : await prismadb.billboard.findUnique({
+        where: {
+          id: billboardId,
+        },
+      });
 
-  const billboard =
-    billboardId === "new"
-      ? null
-      : await prismadb.billboard.findUnique({
-          where: {
-            id: billboardId,
-          },
-        });
-        console.log('initialData', billboard);
+console.log("FOUND BILLBOARD =", billboard);
 
   return (
     <div className="flex-col">

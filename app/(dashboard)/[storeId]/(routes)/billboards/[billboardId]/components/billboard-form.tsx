@@ -68,10 +68,24 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
 console.log("IMAGE URL:", form.watch("imageUrl"));
 
+ const getBillboard = async () => {
+  try {
+    const response = await axios.get(
+      `/api/stores/${params.storeId}/billboards/${params.billboardId}`
+    );
+
+    console.log("GET RESPONSE:", response.data);
+
+    toast.success("Billboard fetched.");
+  } catch (error) {
+    toast.error("Failed to fetch billboard.");
+  }
+};
+
   const onSubmit = async (data: BillboardFormValues) => {
     console.log("SUBMIT DATA:", data);
       console.log(data);
-    try {
+    try { 
       setLoading(true)
 
       if (initialData) {
@@ -187,6 +201,10 @@ console.log("IMAGE URL:", form.watch("imageUrl"));
             </FormItem>
           )}
         />
+        
+        <Button onClick={getBillboard}>
+        Test GET
+       </Button>
 
         <Button disabled={loading} type="submit">
           {action}
