@@ -22,7 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { AlertModal } from "@/components/modals/alert-modal"
-import { useOrigin } from "@/hooks/use-origin"
 import { Billboard } from "@prisma/client"
 import ImageUpload from "@/components/ui/image-upload";
 
@@ -43,7 +42,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 }) => {
   const params = useParams()
   const router = useRouter()
-  const origin = useOrigin()
+  
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -70,15 +69,21 @@ console.log("IMAGE URL:", form.watch("imageUrl"));
 
  const getBillboard = async () => {
   try {
+    console.log("storeId =", params.storeId);
+    console.log("billboardId =", params.billboardId);
+
+    if (!params.billboardId || params.billboardId === "new") {
+      return;
+    }
+
     const response = await axios.get(
       `/api/stores/${params.storeId}/billboards/${params.billboardId}`
     );
 
     console.log("GET RESPONSE:", response.data);
 
-    toast.success("Billboard fetched.");
   } catch (error) {
-    toast.error("Failed to fetch billboard.");
+    console.error(error);
   }
 };
 
@@ -98,7 +103,7 @@ console.log("IMAGE URL:", form.watch("imageUrl"));
       }
 
       router.refresh()
-      router.push(`/${params.storeId}/billboards`)
+      // router.push(`/${params.storeId}/billboards`)
       toast.success(toastMessage)
     } catch (error) {
       toast.error("Something went wrong.")
